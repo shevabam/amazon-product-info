@@ -36,15 +36,16 @@ It downloads the [Product Advertising API PHP SDK](https://github.com/thewirecut
 
 First, include the library in your code using the Composer autoloader and then create an AmazonProductInfo object with your Amazon Associates credentials.
 
+```php
+require 'vendor/autoload.php';
 
-	require 'vendor/autoload.php';
-	
-	$Amz = new \AmazonProductInfo\AmazonProductInfo([
-	    'access_key'  => '',
-	    'secret_key'  => '',
-	    'partner_tag' => '',
-	    'lang'        => 'fr'
-	]);
+$Amz = new \AmazonProductInfo\AmazonProductInfo([
+    'access_key'  => '',
+    'secret_key'  => '',
+    'partner_tag' => '',
+    'lang'        => 'fr'
+]);
+```
 
 
 ### Locale
@@ -79,25 +80,27 @@ Default: us.
 
 You can search items with ASIN number (must be an array):
 
-	$getResults = $Amz->searchByAsin(["B084J4MZK6", "B07ZZVWB4L"]);
-
+```php
+$getResults = $Amz->searchByAsin(["B084J4MZK6", "B07ZZVWB4L"]);
+```
 
 
 
 ## Full example
 
 
-	require 'vendor/autoload.php';
-	
-	$Amz = new \AmazonProductInfo\AmazonProductInfo([
-	    'access_key'  => '',
-	    'secret_key'  => '',
-	    'partner_tag' => '',
-	    'lang'        => 'fr'
-	]);
-	
-	$getResults = $Amz->searchByAsin(["B084J4MZK6", "B07ZZVWB4L"]);
+```php
+require 'vendor/autoload.php';
 
+$Amz = new \AmazonProductInfo\AmazonProductInfo([
+    'access_key'  => '',
+    'secret_key'  => '',
+    'partner_tag' => '',
+    'lang'        => 'fr'
+]);
+
+$getResults = $Amz->searchByAsin(["B084J4MZK6", "B07ZZVWB4L"]);
+```
 
 Result:
 
