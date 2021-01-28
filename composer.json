@@ -11,6 +11,7 @@
         }
     ],
     "version": "1.0.0",
+    "minimum-stability": "stable",
     "license": "GPL-2.0-only",
     "support": {
         "issues": "https://github.com/shevabam/amazon-product-info/issues",
