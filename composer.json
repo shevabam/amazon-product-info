@@ -1,0 +1,28 @@
+{
+    "name": "shevabam/amazon-product-info",
+    "description": "Get simple product information from Amazon API",
+    "keywords": ["amazon", "product", "api"],
+    "homepage": "https://github.com/shevabam/amazon-product-info",
+    "type": "library",
+    "authors": [
+        {
+            "name": "shevabam",
+            "homepage": "https://blog.shevarezo.fr"
+        }
+    ],
+    "version": "1.0.0",
+    "license": "GPL-2.0-only",
+    "support": {
+        "issues": "https://github.com/shevabam/amazon-product-info/issues",
+        "source": "https://github.com/shevabam/amazon-product-info/tree/master"
+    },
+    "require": {
+        "php": ">=5.5",
+        "thewirecutter/paapi5-php-sdk": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AmazonProductInfo\\": "src"
+        }
+    }
+}
