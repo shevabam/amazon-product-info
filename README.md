@@ -1,6 +1,6 @@
 # Amazon Product Information
 
-Amazon Product Information is a PHP library for fetching simples products information from Amazon API.
+Amazon Product Information is a PHP library for fetching simple products information from Amazon API.
 
 Provides simple information about a product from its ASIN number.
 
@@ -17,9 +17,11 @@ The information returned is:
 
 You have to set up an [Amazon Associates](https://affiliate-program.amazon.com/) account that has been reviewed and received final acceptance in to the Amazon Associates Program.
 
-You'll need an access key, secret key, and partner tag *(Tools > Product Advertising API)*.
+You'll need an **access key**, **secret key**, and **partner tag** *(Tools > Product Advertising API)*.
 
 More information [here](https://webservices.amazon.com/paapi5/documentation/register-for-pa-api.html).
+
+Amazon Product Information requires PHP 8.0+.
 
 
 ## Installation
@@ -85,9 +87,7 @@ $getResults = $Amz->searchByAsin(["B084J4MZK6", "B07ZZVWB4L"]);
 ```
 
 
-
 ## Full example
-
 
 ```php
 require 'vendor/autoload.php';
