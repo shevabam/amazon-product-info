@@ -10,7 +10,7 @@
             "homepage": "https://blog.shevarezo.fr"
         }
     ],
-    "version": "1.0.0",
+    "version": "2.0.0",
     "minimum-stability": "stable",
     "license": "GPL-2.0-only",
     "support": {
@@ -18,8 +18,8 @@
         "source": "https://github.com/shevabam/amazon-product-info/tree/master"
     },
     "require": {
-        "php": ">=5.5",
-        "thewirecutter/paapi5-php-sdk": "^1.0"
+        "php": ">=8.0",
+        "thewirecutter/paapi5-php-sdk": "^1.2"
     },
     "autoload": {
         "psr-4": {

@@ -9,14 +9,14 @@ use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\GetItemsResource;
 use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\PartnerType;
 use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\ProductAdvertisingAPIClientException;
 use Amazon\ProductAdvertisingAPI\v1\Configuration;
+use \Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\Item;
 
 class AmazonProductInfo
 {
     /**
      * API connection data
-     * @var array
      */
-    private $params = [
+    private array $params = [
         'access_key'    => null,
         'secret_key'    => null,
         'partner_tag'   => null,
@@ -24,14 +24,12 @@ class AmazonProductInfo
     ];
 
     /**
-     * Amazon API config
-     * @var object
+     * Amazon API config=
      */
-    private $config;
+    private Configuration $config;
 
     /**
      * Amazon API instance
-     * @var object
      */
     private $instance;
 
@@ -40,7 +38,7 @@ class AmazonProductInfo
      * For more details refer:
      * https://webservices.amazon.com/paapi5/documentation/common-request-parameters.html#host-and-region
      */
-    private $regions = [
+    private array $regions = [
         'au' => ['host' => 'webservices.amazon.com.au', 'region' => 'us-west-2'],
         'br' => ['host' => 'webservices.amazon.com.br', 'region' => 'us-east-1'],
         'ca' => ['host' => 'webservices.amazon.ca', 'region' => 'us-east-1'],
@@ -81,7 +79,7 @@ class AmazonProductInfo
      *
      * @param array $params Parameters (see global var $params)
      */
-    private function setConfig($params)
+    private function setConfig(array $params): void
     {
         $this->config = new Configuration();
 
@@ -97,19 +95,15 @@ class AmazonProductInfo
      * Search item(s) by ASIN number
      *
      * @param array $itemIds Array of ASIN number
-     *
      * @return array Products information
      */
-    public function searchByAsin(array $itemIds)
+    public function searchByAsin(array $itemIds): array
     {
         $results = ['error' => null, 'datas' => []];
 
-        if (count($itemIds) == 0 || !is_array($itemIds))
-        {
+        if (0 === count($itemIds) || !is_array($itemIds)) {
             $results['error'] = 'No item found';
-        }
-        else
-        {
+        } else {
             // https://webservices.amazon.com/paapi5/documentation/get-items.html#resources-parameter
             $resources = [
                 GetItemsResource::ITEM_INFOTITLE,
@@ -129,56 +123,41 @@ class AmazonProductInfo
             // Validating request
             $invalidPropertyList = $getItemsRequest->listInvalidProperties();
             $length = count($invalidPropertyList);
-            if ($length > 0)
-            {
+            if ($length > 0) {
                 $results['error'] = 'Error forming the request';
-            }
-            else
-            {
-                try
-                {
+            } else {
+                try {
                     $getItemsResponse = $this->instance->getItems($getItemsRequest);
 
-                    if ($getItemsResponse->getItemsResult() !== null)
-                    {
-                        if ($getItemsResponse->getItemsResult()->getItems() !== null)
-                        {
-                            $responseList = $this->parseResponse($getItemsResponse->getItemsResult()->getItems());
+                    if (null !== $getItemsResponse->getItemsResult() && null !== $getItemsResponse->getItemsResult()->getItems()) {
+                        $responseList = $this->parseResponse($getItemsResponse->getItemsResult()->getItems());
 
-                            foreach ($itemIds as $itemId)
-                            {
-                                $item = $responseList[$itemId];
+                        foreach ($itemIds as $itemId) {
+                            $item = $responseList[$itemId];
 
-                                $itemDatas = [];
+                            $itemDatas = [];
 
-                                if ($item !== null)
-                                {
-                                    $itemDatas['title'] = $this->getItemTitle($item);
-                                    $itemDatas['url'] = $this->getUrl($item);
-                                    $itemDatas['images'] = $this->getImages($item);
-                                    $itemDatas['price'] = $this->getPrice($item);
-                                }
-                                else
-                                {
-                                    $results['error'] = "Item not found, check errors";
-                                }
-
-                                $results['datas'][$itemId] = $itemDatas;
+                            if (null !== $item) {
+                                $itemDatas['title'] = $this->getItemTitle($item);
+                                $itemDatas['url'] = $this->getUrl($item);
+                                $itemDatas['images'] = $this->getImages($item);
+                                $itemDatas['price'] = $this->getPrice($item);
+                            } else {
+                                $results['error'] = "Item not found, check errors";
                             }
+
+                            $results['datas'][$itemId] = $itemDatas;
                         }
                     }
 
-                    if ($getItemsResponse->getErrors() !== null)
-                    {
+                    if (null !== $getItemsResponse->getErrors()) {
                         $results['error'] = $getItemsResponse->getErrors()[0]->getCode().' - '.$getItemsResponse->getErrors()[0]->getMessage();
                     }
-                } catch (Exception $exception)
-                {
+                } catch (\Exception $exception) {
                     $results['error'] = $exception->getMessage();
                 }
             }
         }
-
 
         return $results;
     }
@@ -188,15 +167,13 @@ class AmazonProductInfo
      * Get item title
      *
      * @param object $item \Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\Item
-     *
      * @return string Product title
      */
-    private function getItemTitle($item)
+    private function getItemTitle(Item $item): ?string
     {
         $result = null;
 
-        if ($item->getItemInfo() !== null && $item->getItemInfo()->getTitle() !== null && $item->getItemInfo()->getTitle()->getDisplayValue() !== null)
-        {
+        if (null !== $item->getItemInfo() && null !== $item->getItemInfo()->getTitle() && null !== $item->getItemInfo()->getTitle()->getDisplayValue()) {
             $result = $item->getItemInfo()->getTitle()->getDisplayValue();
         }
 
@@ -208,15 +185,13 @@ class AmazonProductInfo
      * Get item URL
      *
      * @param object $item \Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\Item
-     *
      * @return string Product URL
      */
-    private function getUrl($item)
+    private function getUrl(Item $item): ?string
     {
         $result = null;
 
-        if ($item->getDetailPageURL() !== null)
-        {
+        if (null !== $item->getDetailPageURL()) {
             $result = $item->getDetailPageURL();
         }
 
@@ -228,18 +203,15 @@ class AmazonProductInfo
      * Get item images
      *
      * @param object $item \Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\Item
-     *
      * @return array Product primary images
      */
-    private function getImages($item)
+    private function getImages(Item $item): ?array
     {
         $sizes = ['small', 'medium', 'large'];
         $result = null;
 
-        if ($item->getImages() !== null && $item->getImages()->getPrimary() !== null)
-        {
-            foreach ($sizes as $size)
-            {
+        if (null !== $item->getImages() && null !== $item->getImages()->getPrimary()) {
+            foreach ($sizes as $size) {
                 $method = 'get'.ucfirst($size);
 
                 $result['primary'][$size] = [
@@ -249,7 +221,6 @@ class AmazonProductInfo
                 ];
             }
         }
-        
 
         return $result;
     }
@@ -259,15 +230,18 @@ class AmazonProductInfo
      * Get item price
      *
      * @param object $item \Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\Item
-     *
      * @return string Product price
      */
-    private function getPrice($item)
+    private function getPrice(Item $item): ?string
     {
         $result = null;
 
-        if ($item->getOffers() !== null && $item->getOffers()->getListings() !== null && $item->getOffers()->getListings()[0]->getPrice() !== null && $item->getOffers()->getListings()[0]->getPrice()->getDisplayAmount() !== null)
-        {
+        if (
+            null !== $item->getOffers() 
+            && null !== $item->getOffers()->getListings() 
+            && null !== $item->getOffers()->getListings()[0]->getPrice() 
+            && null !== $item->getOffers()->getListings()[0]->getPrice()->getDisplayAmount() 
+        ) {
             $result = $item->getOffers()->getListings()[0]->getPrice()->getDisplayAmount();
         }
 
@@ -282,12 +256,14 @@ class AmazonProductInfo
      * @param array $items Items value.
      * @return array of \Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\Item mapped to ASIN.
      */
-    public function parseResponse($items)
+    public function parseResponse(array $items): array
     {
         $mappedResponse = [];
+
         foreach ($items as $item) {
             $mappedResponse[$item->getASIN()] = $item;
         }
+
         return $mappedResponse;
     }
 
